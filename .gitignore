@@ -1,0 +1,48 @@
+# ── OS 생성 파일 ──────────────────────────────
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ── 편집기 / IDE ─────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# ── 로그 / 임시 파일 ─────────────────────────
+*.log
+*.tmp
+*.temp
+*.bak
+*.cache
+
+# ── 환경 변수 / 비밀 정보 ────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ── 의존성 / 빌드 산출물 ─────────────────────
+node_modules/
+dist/
+build/
+out/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# ── 기타 ─────────────────────────────────────
+.claude/
