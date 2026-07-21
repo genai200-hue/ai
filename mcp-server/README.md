@@ -41,6 +41,18 @@ MCP 설정에 stdio 서버로 추가한다:
 }
 ```
 
+## 테스트
+
+Node 내장 러너(`node:test`) + `tsx` 사용, 추가 의존성 없음.
+
+```bash
+npm run test:unit          # 순수 로직(분류·필터·회사해석·요약) — 네트워크 불필요
+OPENDART_API_KEY=... npm run test:integration   # 서버를 stdio로 띄워 도구 호출(라이브)
+OPENDART_API_KEY=... npm test                    # build + 단위 + 통합 전체
+```
+
+통합 테스트는 `OPENDART_API_KEY`가 없으면 자동 스킵된다.
+
 ## 검사 (MCP Inspector)
 
 ```bash
