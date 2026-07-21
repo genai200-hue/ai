@@ -39,6 +39,11 @@ node_modules/
 dist/
 build/
 out/
+# Next.js
+.next/
+next-env.d.ts
+*.tsbuildinfo
+.vercel/
 __pycache__/
 *.py[cod]
 .venv/

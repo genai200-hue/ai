@@ -34,9 +34,11 @@ export interface Disclosure {
   title: string;
   /**
    * 현재 시각 기준 몇 시간 전에 접수됐는지 (mock 전용).
-   * 실데이터 연동 시 이 필드 대신 실제 접수 일시(submittedAt)를 사용한다.
+   * 실데이터에서는 submittedMs 를 사용하며 이 값은 0으로 둔다.
    */
   hoursAgo: number;
+  /** 접수 일시(epoch ms). 실데이터 연동 시 사용. 없으면 hoursAgo로 계산. */
+  submittedMs?: number;
   /** 원문 링크 (DART 등) */
   sourceUrl: string;
   /** 구조화 발췌 항목 */
