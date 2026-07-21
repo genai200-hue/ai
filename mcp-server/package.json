@@ -17,7 +17,7 @@
     "dev": "tsx watch src/index.ts",
     "build:corp-index": "node scripts/build-corp-index.mjs",
     "test": "npm run build && npm run test:unit && npm run test:integration",
-    "test:unit": "node --import tsx --test test/unit.test.ts",
+    "test:unit": "node --import tsx --test test/unit.test.ts test/unit-extra.test.ts",
     "test:integration": "node --import tsx --test test/integration.test.ts",
     "clean": "rm -rf dist"
   },

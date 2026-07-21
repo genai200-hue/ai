@@ -1,9 +1,11 @@
 import type { Stock } from "@/lib/types";
 
 /**
- * 종목 마스터 (mock).
- * 실데이터 연동 시 DART 기업개황(corpCode) 기반 목록으로 교체한다.
- * inCoreUniverse=true 는 KOSPI200 고정 리스트(주요 종목 유니버스) 포함을 의미한다.
+ * 주요 종목 유니버스 (KOSPI200 고정 리스트 일부).
+ *
+ * 등록 가능한 종목 전체는 `lib/dart/corp-index.json`(전체 상장사 색인)으로 검색·해석한다
+ * (스펙 US-19). 이 목록은 그 위에 덧입히는 오버레이로, 배치 사전요약 대상·"유니버스"
+ * 배지·시장(KOSPI/KOSDAQ) 라벨 표시에만 쓴다. inCoreUniverse=true 는 유니버스 포함을 뜻한다.
  */
 export const STOCK_MASTER: Stock[] = [
   { code: "005930", name: "삼성전자", market: "KOSPI", inCoreUniverse: true },

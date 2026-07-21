@@ -6,7 +6,7 @@
  * 이 경계를 우회하지 말 것.
  */
 import type { Disclosure, Period } from "@/lib/types";
-import { corpCodeOf } from "@/lib/dart/corpCodes";
+import { resolveCorpCode } from "@/lib/dart/corpIndex";
 import {
   fetchDisclosureList,
   fetchTreasuryAcq,
@@ -44,8 +44,8 @@ async function forStock(
   bgnDe: string,
   endDe: string
 ): Promise<Disclosure[]> {
-  const corpCode = corpCodeOf(code);
-  if (!corpCode) return []; // 유니버스 밖 종목
+  const corpCode = resolveCorpCode(code);
+  if (!corpCode) return []; // 상장사 색인에 없는 종목코드
 
   const raw = await fetchDisclosureList(corpCode, bgnDe, endDe);
   const list = raw.filter((i) => isMaterialReport(i.report_nm));

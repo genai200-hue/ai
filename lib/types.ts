@@ -14,6 +14,18 @@ export interface Stock {
   inCoreUniverse: boolean;
 }
 
+/**
+ * 종목 검색 결과 항목.
+ * 전체 상장사 색인에서 온 최소 정보(code·name)에, 주요 종목 유니버스에 속하면
+ * market·inCoreUniverse 를 덧붙인다(유니버스 배지·시장 라벨 표시용).
+ */
+export interface StockSearchItem {
+  code: string;
+  name: string;
+  market?: Market;
+  inCoreUniverse?: boolean;
+}
+
 /** 공시 원문에서 뽑은 정형 항목 (구조화 발췌) */
 export interface StructuredField {
   label: string;

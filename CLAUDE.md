@@ -18,7 +18,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## 프로젝트 개요
 
 - **이름**: 삼성증권-0721 — 관심종목 공시 요약 웹앱
-- **상태**: 실데이터 연동 (OpenDART 실공시 목록 + 정형 수치 + 규칙 기반 요약). 종목 마스터는 고정 유니버스(20종목) mock 유지. 원문 파싱·LLM 요약은 미도입(ADR-0005).
+- **상태**: 실데이터 연동 (OpenDART 실공시 목록 + 정형 수치 + 규칙 기반 요약). 종목 등록은 전체 상장사 색인 기반(임의 상장사 검색·등록 가능, 스펙 US-19). 유니버스 20종목은 배치 사전요약 대상·배지로만 유지. 원문 파싱·LLM 요약은 미도입(ADR-0005).
 - **플랫폼**: 웹앱 (Next.js App Router + TypeScript). 개발 환경은 Windows. 배포는 Vercel(권장 리전 `icn1`).
 - **기본 언어**: 한국어 (커밋·문서·주석은 한국어로 작성)
 
@@ -36,11 +36,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## 아키텍처
 
 - **단일 저장소 풀스택**: Next.js(App Router) + TypeScript. 화면은 클라이언트(`app/page.tsx`)에서 구성하고, 공시 조회는 서버 Route Handler(`app/api/disclosures`)가 OpenDART를 호출한다. **브라우저는 DART를 직접 호출할 수 없다**(CORS + 키 노출) — 반드시 서버 경유.
-- **데이터 제공자 seam (핵심)**: 화면은 데이터 소스를 직접 읽지 않고 `/api/disclosures`(← 서버의 `getDisclosures(codes, period)` in `lib/disclosures.ts`)만 통해 접근한다. **이 seam이 실데이터(DART) 구현 지점이자 주요 테스트 지점.** 새 데이터 접근을 추가할 땐 이 경계를 우회하지 말 것. 종목 마스터는 고정 유니버스라 클라이언트 상수(`lib/mock/stocks.ts`) 유지.
+- **데이터 제공자 seam (핵심)**: 화면은 데이터 소스를 직접 읽지 않고 서버 라우트만 통해 접근한다 — 공시는 `/api/disclosures`(← `getDisclosures(codes, period)` in `lib/disclosures.ts`), 종목 검색은 `/api/stocks`(← `searchStocks(q)` in `lib/dart/corpIndex.ts`). **이 seam이 실데이터(DART) 구현 지점이자 주요 테스트 지점.** 새 데이터 접근을 추가할 땐 이 경계를 우회하지 말 것.
+- **종목 마스터 = 전체 상장사 색인**: 등록 가능한 종목은 주요 종목 유니버스(20)로 제한되지 않는다(스펙 US-19). 검색·corp_code 해석은 DART 기업개황에서 상장사만 추린 전체 색인(`lib/dart/corp-index.json`, 서버 전용)으로 처리한다. 이 색인은 `mcp-server/scripts/build-corp-index.mjs` 산출물의 사본이며(배포 시 mcp-server 제외 → 웹앱 자체 사본 필요), 갱신 시 그 스크립트를 다시 돌려 교체한다. `lib/mock/stocks.ts`의 20종목은 이제 **주요 종목 유니버스(배치 사전요약 대상·유니버스 배지·시장 라벨 오버레이)** 로만 쓴다.
 - **DART 연동 범위(ADR-0005)**: `list.json`(공시 목록) + 자기주식취득결정·유상증자결정 정형 API로 실제 수치 결합. 공급계약·잠정실적 등 정형 API가 없는 유형은 목록 정보 + 원문 링크로 처리(수치를 지어내지 않음). 요약은 정형 값·목록 메타에서 **규칙 기반 사실 서술**로 생성(LLM 미사용).
 - **요약은 공시 단위**: 요약은 사용자와 무관하게 공시 단위로 생성·재사용된다(무로그인 구조와 정합, ADR-0004).
 - **상태 저장은 클라이언트 로컬**: 관심종목·읽음 상태는 localStorage에만 저장. 서버는 개별 사용자를 식별하지 않는다(ADR-0002).
-- **디렉터리(현재)**: `app/`(페이지·API 라우트), `lib/types.ts`(도메인 타입), `lib/disclosures.ts`(데이터 제공자 seam), `lib/dart/`(OpenDART 클라이언트·corp_code 매핑·요약 생성), `lib/mock/stocks.ts`(종목 마스터).
+- **디렉터리(현재)**: `app/`(페이지·API 라우트: `api/disclosures`, `api/stocks`), `lib/types.ts`(도메인 타입), `lib/disclosures.ts`(공시 seam), `lib/dart/`(OpenDART 클라이언트·corp_code 매핑·요약 생성·전체 상장사 색인 `corpIndex.ts`/`corp-index.json`), `lib/mock/stocks.ts`(주요 종목 유니버스 20종목).
 - **MCP 서버(`mcp-server/`)**: 회사명을 받아 최근 공시를 사실 중립 요약으로 반환하는 독립 stdio MCP 서버(`opendart-mcp-server`). 웹앱과 동일한 DART 연동 규칙(정형 API 있는 유형만 수치, 규칙 요약, ADR-0003)을 따르며, 상장사 전체 색인(`data/corp-index.json`)으로 임의 회사명을 해석한다. 키는 서버 프로세스 환경변수 `OPENDART_API_KEY`. 자체 `package.json`으로 빌드(`mcp-server/README.md`).
 
 ## 규칙 및 참고 사항
