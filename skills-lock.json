@@ -157,6 +157,12 @@
       "skillPath": "skills/engineering/triage/SKILL.md",
       "computedHash": "8695824ffe756567f6cf3b758853a094a9c974bf96226cde88b0b6c08099dabc"
     },
+    "use-design-md": {
+      "source": "CaesiumY/ko-design-md",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/use-design-md/SKILL.md",
+      "computedHash": "7d0b8a9c8850ff1f88cb91c91a3c7c13776e0ca6f9235a16095bce349013be81"
+    },
     "wayfinder": {
       "source": "mattpocock/skills",
       "sourceType": "github",
