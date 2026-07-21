@@ -296,7 +296,7 @@ export default function Page() {
         esc(d.id) +
         '</span></div><a class="src-link" href="' +
         esc(d.sourceUrl) +
-        '" target="_blank" rel="noopener noreferrer">원문 보기 →</a></div></div></div></article>'
+        '" target="_blank" rel="noopener">원문 보기 →</a></div></div></div></article>'
       );
     }
 

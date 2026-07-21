@@ -41,6 +41,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **요약은 공시 단위**: 요약은 사용자와 무관하게 공시 단위로 생성·재사용된다(무로그인 구조와 정합, ADR-0004).
 - **상태 저장은 클라이언트 로컬**: 관심종목·읽음 상태는 localStorage에만 저장. 서버는 개별 사용자를 식별하지 않는다(ADR-0002).
 - **디렉터리(현재)**: `app/`(페이지·API 라우트), `lib/types.ts`(도메인 타입), `lib/disclosures.ts`(데이터 제공자 seam), `lib/dart/`(OpenDART 클라이언트·corp_code 매핑·요약 생성), `lib/mock/stocks.ts`(종목 마스터).
+- **MCP 서버(`mcp-server/`)**: 회사명을 받아 최근 공시를 사실 중립 요약으로 반환하는 독립 stdio MCP 서버(`opendart-mcp-server`). 웹앱과 동일한 DART 연동 규칙(정형 API 있는 유형만 수치, 규칙 요약, ADR-0003)을 따르며, 상장사 전체 색인(`data/corp-index.json`)으로 임의 회사명을 해석한다. 키는 서버 프로세스 환경변수 `OPENDART_API_KEY`. 자체 `package.json`으로 빌드(`mcp-server/README.md`).
 
 ## 규칙 및 참고 사항
 
