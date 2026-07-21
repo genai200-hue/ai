@@ -39,18 +39,22 @@ export function isMaterialReport(reportNm: string): boolean {
 /** report_nm 키워드로 공시유형 라벨 도출 */
 export function classifyType(reportNm: string): string {
   const t = reportNm;
-  if (t.includes("실적")) return "실적";
+  // 영업(잠정)실적만 '실적'. "증권발행실적보고서" 같은 발행결과 보고서는 제외.
+  if (/영업.*실적|잠정실적/.test(t)) return "실적";
   if (t.includes("공급계약") || t.includes("단일판매")) return "공급계약";
   if (t.includes("자기주식")) return "자기주식";
-  if (t.includes("유상증자")) return "유상증자";
-  if (t.includes("무상증자")) return "무상증자";
+  // '유상증자결정'만 유상증자로. 발행결과·자율공시는 아래 사채발행/기타로 흘려보냄.
+  if (t.includes("유상증자") && t.includes("결정")) return "유상증자";
+  if (t.includes("무상증자") && t.includes("결정")) return "무상증자";
   if (t.includes("배당")) return "배당";
   if (t.includes("소송")) return "소송";
   if (t.includes("합병") || t.includes("분할")) return "합병·분할";
-  if (t.includes("전환사채") || t.includes("신주인수권") || t.includes("교환사채"))
+  if (t.includes("감자")) return "감자";
+  if (t.includes("전환사채") || t.includes("신주인수권부사채") || t.includes("교환사채"))
     return "사채발행";
   if (t.includes("대량보유") || t.includes("특정증권등소유") || t.includes("주요주주"))
     return "지분공시";
+  if (t.includes("기업설명회") || t.includes("IR")) return "IR";
   return "기타";
 }
 
